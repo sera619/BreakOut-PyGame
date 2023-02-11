@@ -19,4 +19,10 @@ clean:
 	@if exist ".\src\__pycache__" rd /q /s .\src\__pycache__
 	@if exist ".\tests\__pycache__" rd /q /s .\tests\__pycache__
 	@echo Clean up finished!
-	
+
+build:
+	cls
+	@echo Start building process...
+	@pyinstaller .\config\main.spec
+	@explorer .\dist\main
+	@echo Buil is finished
