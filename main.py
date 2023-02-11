@@ -6,12 +6,13 @@ from src.ui_text import InfoText as pt
 from src.menu import BDMenu
 from src.player import Player
 
+BASE_DIR = os.path.dirname(__file__)
 class BreakOut:
     def __init__(self) -> None:
         pg.init()
         self.screen = pg.display.set_mode((DISPLAY_W, DISPLAY_H))
         pg.display.set_caption('BreakOut PyGame')
-        self.bg_img = pg.image.load('./assets/img/bg.jpg').convert_alpha()
+        self.bg_img = pg.image.load(os.path.join(BASE_DIR +'\\assets\\img\\','bg.jpg')).convert_alpha()
         self.bg_img = pg.transform.scale(self.bg_img,(DISPLAY_W, DISPLAY_H))
         self.manager = pgGUI.UIManager((DISPLAY_W , DISPLAY_H), 'theme.json')
         self.state = State.MENU
@@ -195,9 +196,9 @@ class BreakOut:
                         self.Menu.show_mainmenu()
                         self.state = State.MENU
 
-                    elif event.ui_element == self.Menu.test_button:
-                        self.Menu.show_highscoreinput()
-                        self.state = State.NAMEINPUT
+                    # elif event.ui_element == self.Menu.test_button:
+                    #     self.Menu.show_highscoreinput()
+                    #     self.state = State.NAMEINPUT
 
 
                     elif event.ui_element == self.Menu.exit_button:
