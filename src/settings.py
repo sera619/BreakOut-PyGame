@@ -7,7 +7,7 @@ import random, json, os
 from typing import Final
 from dataclasses import dataclass
 
-VERSION: Final = "1.2.4"
+VERSION: Final = "1.4.8"
 VERSIONTEXT: Final = f"Version {VERSION} | Design & Development © 2023 S3R43o3"
 
 MENU_W, MENU_H = 1200, 75
@@ -38,7 +38,6 @@ LEVEL_BREAKPOINTS: dict = {
     '5': 12500,
     '6': 20000  
 }
-
 
 class MoveDirection(enum.Enum):
     UP = 'up'
