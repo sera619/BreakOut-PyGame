@@ -24,5 +24,5 @@ build:
 	cls
 	@echo Start building process...
 	@pyinstaller .\config\main.spec
-	@explorer .\dist\main
+	@explorer .\dist\BreakOut
 	@echo Buil is finished
