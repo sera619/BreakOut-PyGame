@@ -14,6 +14,9 @@ class BDMenu():
         self.version_label = None
         self.highscore_button = None
         self.play_button = None
+        self.help_back_button = None
+        self.help_labels = []
+
         #self.data.save(self.highscores)
 
     def clear_screen(self):
@@ -37,8 +40,13 @@ class BDMenu():
             text='Highscore', 
             manager=self.manager)
 
+        self.help_button = GUI.UIButton(
+             relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 150, (DISPLAY_H * 0.550 ) - 10, 300, 65), 
+             text='Help', 
+             manager=self.manager)
+
         self.exit_button = GUI.UIButton(
-            relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 150, (DISPLAY_H * 0.550 ) - 10, 300, 65), 
+            relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 150, (DISPLAY_H * 0.625 ) - 10, 300, 65), 
             text='Exit', 
             manager=self.manager)
 
@@ -163,7 +171,40 @@ class BDMenu():
             manager=self.manager, 
             object_id=pgGUI.core.ObjectID('#gameinfolabel-r'))
 
+    def show_help(self):
+        self.clear_screen()
+        self.title_label = GUI.UILabel(
+            relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 400, (DISPLAY_H * 0.15 ) - 25, 800, 100), 
+            text='BreakDown', 
+            manager=self.manager)
+        
+        self.help_subtitle = GUI.UILabel(
+            relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 400, (DISPLAY_H * 0.25 ) - 25, 800, 100), 
+            text='Help', 
+            manager=self.manager,
+            object_id= pgGUI.core.ObjectID('#subtitlelabel'))
 
+        space = 0.4
+        for i in HELP_TEXT:
+            label = pgGUI.elements.UILabel(
+                relative_rect=pg.Rect((DISPLAY_W * 0.5) - 300, (DISPLAY_H * space) - 25, 600, 50),
+                text=str(i),
+                manager=self.manager,
+                object_id= pgGUI.core.ObjectID('#scoreitemlabel'))
+            self.help_labels.append(label)
+            space += 0.050
+
+        self.help_back_button = GUI.UIButton(
+            relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 150, (DISPLAY_H * 0.9 ) - 10 , 300, 65), 
+            text='Back', 
+            manager=self.manager)
+
+        self.version_label = GUI.UILabel(
+            relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 350, (DISPLAY_H * 0.95 ), 700, 50), 
+            text=f"{VERSIONTEXT}", 
+            manager=self.manager, 
+            object_id=pgGUI.core.ObjectID('#versionlabel'))
+        
 
 
 class ScoreData:

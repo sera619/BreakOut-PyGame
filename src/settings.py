@@ -51,3 +51,11 @@ class State(enum.Enum):
     HIGHSCORE = 2
     NAMEINPUT = 3
     HELP = 4
+
+HELP_TEXT = [
+    "ESC - Exit Game / Mainmenu",
+    "P - Game pause",
+    "ENTER - Start game",
+    "A or Arrow Left - Move Left",
+    "D or Arrow Right - Move Right",
+]

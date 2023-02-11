@@ -153,8 +153,6 @@ class BreakOut:
             for event in pg.event.get():
                 if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE and not self.state == State.INGAME):
                     self.running = False
-
-
                 
                 # keyboard events
                 if event.type == pg.KEYUP:
@@ -200,23 +198,26 @@ class BreakOut:
                     #     self.Menu.show_highscoreinput()
                     #     self.state = State.NAMEINPUT
 
+                    elif event.ui_element == self.Menu.help_back_button:
+                        self.Menu.show_mainmenu()
+                        self.state = State.MENU
+                    
+                    elif event.ui_element == self.Menu.help_button:
+                        self.Menu.show_help()
+                        self.state = State.HELP
 
                     elif event.ui_element == self.Menu.exit_button:
                         self.running = False
-
-
                 self.manager.process_events(event)
-
-            # set backup img
-
 
             self.reset_screen()
             if self.state == State.MENU:
-                #self.Menu.run()
                 self.manager.draw_ui(self.screen)
             elif self.state == State.HIGHSCORE:
                 self.manager.draw_ui(self.screen)
             elif self.state == State.NAMEINPUT:
+                self.manager.draw_ui(self.screen)
+            elif self.state == State.HELP:
                 self.manager.draw_ui(self.screen)
             elif self.state == State.INGAME:
                 self.draw()
