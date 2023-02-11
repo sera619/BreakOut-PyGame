@@ -1,13 +1,13 @@
 run:
 	cls
 	@echo Run project with scriptfile...
-	python .\main.py
+	@python .\main.py
 
 
 test:
 	cls
 	@echo "Run PyTest ..."
-	pytest
+	@pytest
 	@echo "PyTest finished!"
 
 clean:
