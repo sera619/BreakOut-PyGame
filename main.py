@@ -20,11 +20,10 @@ class BreakOut:
         self.blockboard = GameBlocks(BLOCK_W, BLOCK_H, 5, int(DISPLAY_W // BLOCK_W))
         self.menu_text = pt(self)
         self.paddle = Paddle(PADDLE_W, PADDLE_H, 0, 0, 15)
-        self.ball = Ball(10, 10, 5)
+        self.ball = Ball(10, 10, 7)
         self.ballRect = self.ball.ballRect
         
         self.player = Player("Sera", self.ball._speed)
-
         self.clock = pg.time.Clock()
 
         self.running = False
@@ -32,7 +31,6 @@ class BreakOut:
         self.game_over = False
         self.game_started = False
 
-        
         self.score = 0
         self.score_next = 0
         self.level = 0
@@ -54,20 +52,27 @@ class BreakOut:
         self.broken_blocks += 1
         self.check_level_up()
         self.player.update_player(self.score, self.level, self.broken_blocks)
+        self.Menu.show_gameinfo(self.player)
 
     def start_game(self):
-        self.level = 1
-        self.score = 0
-        self.broken_blocks = 0
-        self.Menu.show_gameinfo()
+        self.Menu.show_gameinfo(self.player)
         if not self.game_started:
             self.game_started = True
         if self.game_over:
-            self.ball.ballRect.centery = DISPLAY_H  // 2
-            self.ball.ballRect.centery = DISPLAY_W // 2
             self.set_gameover(False)
         if not self.ball.active:
             self.ball.set_active(True)
+    
+    def reset_game(self):
+        self.level = 1
+        self.score = 0
+        self.broken_blocks = 0
+        self.game_started = False
+        self.ball.reset_position(self.screen)
+        self.ball.set_active(False)
+        self.blockboard.reset_current()
+        self.update_player()
+
 
     def play_state(self):
         # paddle + ball collision
@@ -78,7 +83,7 @@ class BreakOut:
         hit_index = self.ballRect.collidelist(self.blockboard.block_list)
         if hit_index != -1:
             hit_rect = self.blockboard.block_list.pop(hit_index)
-            hit_color = self.blockboard.color_list.pop(hit_index)
+            hit_color = self.blockboard.new_color_list.pop(hit_index)
             self.dx, self.dy = self.check_block_collision(self.dx, self.dy, self.ballRect, hit_rect)
             hit_rect.inflate_ip(self.ball.width * 4, self.ball.height * 4)
             pg.draw.rect(self.screen, hit_color, hit_rect)
@@ -116,6 +121,9 @@ class BreakOut:
 
     def set_gameover(self, state: bool):
         self.game_over = state
+        if self.score > self.Menu.best_score:
+            self.state = State.NAMEINPUT
+            self.Menu.show_highscoreinput()
         print("Game: Gameover: ", state)
 
     def check_win(self) -> bool:
@@ -124,13 +132,20 @@ class BreakOut:
             return True
         return False
 
+    def set_new_highscore(self):
+        if not self.Menu.score_name_input.get_text() == "":
+            self.Menu.data.add_new_highscore(self.Menu.score_name_input.get_text(), self.score)
+            self.Menu.highscores = self.Menu.data.load()
+            self.Menu.best_score = self.Menu.data.get_best_score(self.Menu.highscores)
+            print("Game: Highscore saved!")
+
     def run(self):
         self.running = True
         self.state = State.MENU
         while self.running:                
             time_delta = self.clock.tick(self.fps) / 1000.0
             for event in pg.event.get():
-                if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
+                if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE and not self.state == State.INGAME):
                     self.running = False
                     pg.quit()
                     exit(0)
@@ -146,11 +161,14 @@ class BreakOut:
                                 print("Game paused!")
                             else:
                                 self.ball.set_active(True)
+                    elif k == pg.K_ESCAPE and self.state == State.INGAME:
+                        self.reset_game()
+                        self.Menu.show_mainmenu()
+                        self.state = State.MENU
                     elif k == pg.K_RETURN and self.state == State.INGAME and self.game_over:
                         self.start_game()
-                    elif k == pg.K_RETURN and self.state == State.INGAME:
-                        if not self.game_started:
-                            self.start_game()
+                    elif k == pg.K_RETURN and self.state == State.INGAME and not self.game_started:
+                        self.start_game()
 
                 # Menu Button events
                 if event.type == pgGUI.UI_BUTTON_PRESSED:
@@ -160,6 +178,8 @@ class BreakOut:
                         self.state = State.HIGHSCORE
                         print("Highscore pressed")
                     elif event.ui_element == self.Menu.nameinput_button:
+                        self.set_new_highscore()
+                        self.reset_game()
                         self.Menu.show_score()
                         self.state = State.HIGHSCORE
                     elif event.ui_element == self.Menu.play_button:
