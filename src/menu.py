@@ -1,14 +1,13 @@
 from src.settings import *
 
 
-# Initialisiere pg und das GUI-System
 class BDMenu():
     def __init__(self, manager: pgGUI.UIManager) -> None:  
         self.manager:pgGUI.UIManager = manager
         self.data = ScoreData()
         self.highscore_labels = []
         self.highscores = self.data.load()
-        self.allscore = self.data.get_best_score()
+        self.best_score = self.data.get_best_score(self.highscores)
         self.nameinput_button = None
         self.score_backbutton = None
         self.title_label = None
@@ -22,23 +21,22 @@ class BDMenu():
     
     def show_mainmenu(self):
         self.clear_screen()
-        # Titel des Spiels
+
         self.title_label = GUI.UILabel(
             relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 400, (DISPLAY_H * 0.15 ) - 25, 800, 100), 
             text='BreakDown', 
             manager=self.manager)
-        # Spielen-Button
+
         self.play_button = GUI.UIButton(
             relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 150, (DISPLAY_H * 0.4 ) - 10, 300, 65), 
             text='Play', 
             manager=self.manager)
-        # Highscore-Button
+
         self.highscore_button = GUI.UIButton(
             relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 150, (DISPLAY_H * 0.475 ) - 10 , 300, 65), 
             text='Highscore', 
             manager=self.manager)
 
-        # Beenden-Button
         self.exit_button = GUI.UIButton(
             relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 150, (DISPLAY_H * 0.550 ) - 10, 300, 65), 
             text='Exit', 
@@ -58,6 +56,7 @@ class BDMenu():
     
     def show_score(self):
         self.clear_screen()
+        self.highscores = self.data.load()
         self.title_label = GUI.UILabel(
             relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 400, (DISPLAY_H * 0.15 ) - 25, 800, 100), 
             text='BreakDown', 
@@ -77,14 +76,14 @@ class BDMenu():
                 object_id= pgGUI.core.ObjectID('#scoreitemlabel')
             )
             self.highscore_labels.append(label)
+            if i == 4:
+                break
 
         self.score_backbutton = GUI.UIButton(
             relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 150, (DISPLAY_H * 0.9 ) - 10 , 300, 65), 
             text='Back', 
             manager=self.manager)
 
-
-                    # Versionstext
         self.version_label = GUI.UILabel(
             relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 350, (DISPLAY_H * 0.95 ), 700, 50), 
             text=f"{VERSIONTEXT}", 
@@ -97,12 +96,19 @@ class BDMenu():
             relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 400, (DISPLAY_H * 0.15 ) - 25, 800, 100), 
             text='BreakDown', 
             manager=self.manager)
+        self.new_score_gameover = GUI.UILabel(
+            relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 400, (DISPLAY_H * 0.3 ) - 25, 800, 100), 
+            text='GAME OVER!', 
+            manager=self.manager,
+            object_id= pgGUI.core.ObjectID('#gameoverlabel'))
 
-        self.title_label = GUI.UILabel(
-            relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 400, (DISPLAY_H * 0.35 ) - 25, 800, 100), 
+        self.new_score_subtitle = GUI.UILabel(
+            relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 400, (DISPLAY_H * 0.475 ) - 25, 800, 100), 
             text='New Highscore!', 
             manager=self.manager,
             object_id= pgGUI.core.ObjectID('#newhighscorelabel'))
+
+
 
         self.score_name_input = GUI.UITextEntryLine(
             relative_rect= pg.Rect((DISPLAY_W * 0.5) - 200, (DISPLAY_H * .575) -10, 400, 50),
@@ -163,12 +169,22 @@ class BDMenu():
 class ScoreData:
     def __init__(self) -> None:
         self.file_path = os.curdir+ '\\data\\scores.json'
-    
+
+    def add_new_highscore(self, name: str, score: int):
+        highscores = self.load()
+        item = {
+            "name": name,
+            "score": score
+        }
+        highscores.append(item)
+        new = sorted(highscores, key=lambda d: d['score'], reverse= True)
+        self.save(new)
+        
     def get_best_score(self, highscores: list) -> int:
         if not len(highscores) > 0:
             return 0
         score_list = [(score['score']) for i, score in enumerate( highscores)]
-        return int(max(score_list))
+        return int(min(score_list))
 
     def save(self, highscores: list):
         with open(self.file_path, 'w') as f:
