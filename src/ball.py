@@ -7,7 +7,7 @@ class Ball(object):
         self.height = height
         self.active = False
         self._speed: int = speed
-        self.radius = 10
+        self.radius = 20
         self.ball_rect = int(self.radius * 2 ** 0.5)
         self.ballRect = pg.Rect(random.randrange(self.ball_rect, GAMEFIELD_W - self.ball_rect), (GAMEFIELD_H - MENU_H)  // 2, self.ball_rect, self.ball_rect)
 
@@ -22,6 +22,8 @@ class Ball(object):
     def update_position(self, screen):
         pg.draw.circle(screen, pg.Color('orange'), self.ballRect.center, self.radius)
 
+    def reset_position(self, screen):
+        pg.draw.circle(screen, pg.Color('orange'), self.ballRect.center, self.radius)
 
     def check_collision(self, mainframe):
         if self.ballRect.centerx < self.radius or self.ballRect.centerx > GAMEFIELD_W - self.radius:
