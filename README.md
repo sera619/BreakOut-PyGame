@@ -9,3 +9,12 @@ __That README is still in development__
 ## Installation ##
 
 ## Screenshots ##
+
+> - Some early Screenshots
+>
+>   - ![main menu](assets/img/mainmenu.png)
+>
+>   - ![ingame](assets/img/ingame.png)
+>
+>   - ![highscore](assets/img/highscore.png)
+>
