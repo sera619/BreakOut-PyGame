@@ -20,7 +20,3 @@ class GameBlocks:
     def draw(self, screen):
         [pg.draw.rect(screen, self.new_color_list[color], block) for color, block in enumerate(self.block_list)]
     
-    class RedBlock:
-        def __init__(self) -> None:
-            self.hi = "HI"
-            print(self.hi)

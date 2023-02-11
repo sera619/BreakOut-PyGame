@@ -12,3 +12,4 @@ def test_highest_score():
     hs = data.get_best_score(data.load())
     assert type(hs) == int
     assert hs != 0
+

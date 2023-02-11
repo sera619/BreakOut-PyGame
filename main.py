@@ -32,8 +32,8 @@ class BreakOut:
         self.game_started = False
 
         self.score = 0
-        self.score_next = 0
-        self.level = 0
+        self.score_next = LEVEL_BREAKPOINTS['1']
+        self.level = 1
         self.broken_blocks = 0
         self.fps = FPS
         self.dx, self.dy = 1, -1
@@ -55,6 +55,7 @@ class BreakOut:
         self.Menu.show_gameinfo(self.player)
 
     def start_game(self):
+        self.player.update_player(self.score, self.level, self.broken_blocks)
         self.Menu.show_gameinfo(self.player)
         if not self.game_started:
             self.game_started = True
@@ -68,6 +69,7 @@ class BreakOut:
         self.score = 0
         self.broken_blocks = 0
         self.game_started = False
+        self.score_next = LEVEL_BREAKPOINTS['1']
         self.ball.reset_position(self.screen)
         self.ball.set_active(False)
         self.blockboard.reset_current()
@@ -138,6 +140,9 @@ class BreakOut:
             self.Menu.highscores = self.Menu.data.load()
             self.Menu.best_score = self.Menu.data.get_best_score(self.Menu.highscores)
             print("Game: Highscore saved!")
+
+    def reset_screen(self):
+        self.screen.blit(self.bg_img,(0,0))
 
     def run(self):
         self.running = True
@@ -229,13 +234,11 @@ class BreakOut:
                 else:
                     self.play_state()
             self.manager.update(time_delta)
-#            pg.display.flip()
+
             pg.display.update()
             self.clock.tick(self.fps) 
 
-    def reset_screen(self):
-        #self.screen.fill(COLOR_BGWIN)
-        self.screen.blit(self.bg_img,(0,0))
+
     
 
 
