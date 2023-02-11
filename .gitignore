@@ -6,3 +6,4 @@ build
 env-breakOut
 test.py
 config
+main.spec
