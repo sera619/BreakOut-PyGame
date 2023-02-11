@@ -153,8 +153,8 @@ class BreakOut:
             for event in pg.event.get():
                 if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE and not self.state == State.INGAME):
                     self.running = False
-                    pg.quit()
-                    exit(0)
+
+
                 
                 # keyboard events
                 if event.type == pg.KEYUP:
@@ -203,8 +203,8 @@ class BreakOut:
 
                     elif event.ui_element == self.Menu.exit_button:
                         self.running = False
-                        pg.quit()
-                        exit(0)
+
+
                 self.manager.process_events(event)
 
             # set backup img
@@ -237,7 +237,9 @@ class BreakOut:
             self.manager.update(time_delta)
 
             pg.display.update()
-            self.clock.tick(self.fps) 
+            self.clock.tick(self.fps)
+        
+        pg.quit()
 
 
     
@@ -250,5 +252,5 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print("ESC Breakout Game")
         pg.quit()
-        exit(0)
+
     
