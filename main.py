@@ -11,7 +11,9 @@ class BreakOut:
     def __init__(self) -> None:
         pg.init()
         self.screen = pg.display.set_mode((DISPLAY_W, DISPLAY_H))
+        self.icon = pg.image.load(os.path.join(BASE_DIR+"\\assets\\img\\", 'gameicon.png'))
         pg.display.set_caption('BreakOut PyGame')
+        pg.display.set_icon(self.icon)
         self.bg_img = pg.image.load(os.path.join(BASE_DIR +'\\assets\\img\\','bg.jpg')).convert_alpha()
         self.bg_img = pg.transform.scale(self.bg_img,(DISPLAY_W, DISPLAY_H))
         self.manager = pgGUI.UIManager((DISPLAY_W , DISPLAY_H), 'theme.json')

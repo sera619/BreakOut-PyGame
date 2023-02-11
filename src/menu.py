@@ -204,8 +204,6 @@ class BDMenu():
             text=f"{VERSIONTEXT}", 
             manager=self.manager, 
             object_id=pgGUI.core.ObjectID('#versionlabel'))
-        
-
 
 class ScoreData:
     def __init__(self) -> None:
