@@ -50,3 +50,4 @@ class State(enum.Enum):
     INGAME = 1
     HIGHSCORE = 2
     NAMEINPUT = 3
+    HELP = 4
