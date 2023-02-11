@@ -25,4 +25,4 @@ build:
 	@echo Start building process...
 	@pyinstaller .\config\main.spec
 	@explorer .\dist\BreakOut
-	@echo Buil is finished
+	@echo Build is finished!
