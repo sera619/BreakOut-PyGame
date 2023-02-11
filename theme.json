@@ -126,7 +126,18 @@
             "regular_path": "./assets/fonts/aliee13.ttf"
         }
     },
-
+    "#gameoverlabel":{
+        "colours":
+        {
+            "normal_text": "rgb(255, 0, 0)"
+        },
+        "font":
+        {
+            "name": "aliee13",
+            "size": "56",
+            "regular_path": "./assets/fonts/aliee13.ttf"
+        }
+    },
     "#newhighscorelabel":{
         "colours":
         {
