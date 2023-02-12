@@ -3,7 +3,7 @@ import pygame_gui as pgGUI
 import pygame_gui.elements as GUI
 import enum
 
-import random, json, os
+import random, json, os, sys
 from typing import Final
 from dataclasses import dataclass
 

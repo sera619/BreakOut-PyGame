@@ -14,7 +14,6 @@ class GameBlocks:
 
     def reset_current(self):
         self.block_list = [pg.Rect(10 + (self.width + 5 ) * i, 10 + (self.height + 5 )* j, self.width, self.height) for i in range(self.column) for j in range(self.rows)]
-        self.color_list = [(255, 0, random.randrange(1, 256)) for i in range(self.column) for j in range(self.rows)]
         self.new_color_list =[(BLOCK_COLORS[random.randint(0, 7)]) for x in self.block_list]
 
     def draw(self, screen):

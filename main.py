@@ -15,6 +15,8 @@ class BreakOut:
         pg.display.set_caption('BreakOut PyGame')
         pg.display.set_icon(self.icon)
         self.bg_img = pg.image.load(os.path.join(BASE_DIR +'\\assets\\img\\','bg.jpg')).convert_alpha()
+        self.ball_img = pg.image.load(os.path.join(os.curdir+"\\assets\\img\\", 'ball.png')).convert_alpha()
+
         self.bg_img = pg.transform.scale(self.bg_img,(DISPLAY_W, DISPLAY_H))
         self.manager = pgGUI.UIManager((DISPLAY_W , DISPLAY_H), 'theme.json')
         self.state = State.MENU
@@ -23,9 +25,8 @@ class BreakOut:
         self.blockboard = GameBlocks(BLOCK_W, BLOCK_H, 5, int(DISPLAY_W // BLOCK_W))
         self.menu_text = pt(self)
         self.paddle = Paddle(PADDLE_W, PADDLE_H, 0, 0, 15)
-        self.ball = Ball(10, 10, 7)
+        self.ball = Ball(10, 10, 7, img = self.ball_img)
         self.ballRect = self.ball.ballRect
-        
         self.player = Player("Sera", self.ball._speed)
         self.clock = pg.time.Clock()
 
@@ -40,6 +41,8 @@ class BreakOut:
         self.broken_blocks = 0
         self.fps = FPS
         self.dx, self.dy = 1, -1
+
+
 
 
     def check_level_up(self):
@@ -80,6 +83,7 @@ class BreakOut:
 
 
     def play_state(self):
+
         # paddle + ball collision
         if self.ballRect.colliderect(self.paddle) and self.dy > 0:
             self.dx, self.dy = self.check_block_collision(self.dx, self.dy, self.ballRect, self.paddle.rect)
@@ -222,12 +226,13 @@ class BreakOut:
             elif self.state == State.HELP:
                 self.manager.draw_ui(self.screen)
             elif self.state == State.INGAME:
-                self.draw()
                 #self.menu_text.draw_infotext()
-                self.manager.draw_ui(self.screen)
                 if not self.game_started:
                     self.menu_text.draw_startText()
-                self.ball.move(self.screen, self)
+                else:
+                    self.manager.draw_ui(self.screen)
+                    self.draw()
+                    self.ball.move(self.screen, self)
 
                 if self.pause:
                     self.draw()
@@ -239,7 +244,9 @@ class BreakOut:
                     self.play_state()
             self.manager.update(time_delta)
 
+
             pg.display.update()
+            pg.display.flip()
             self.clock.tick(self.fps)
         
         pg.quit()
@@ -254,6 +261,9 @@ if __name__ == '__main__':
         game.run()
     except KeyboardInterrupt:
         print("ESC Breakout Game")
+
+    finally:
         pg.quit()
+        sys.exit()
 
     
