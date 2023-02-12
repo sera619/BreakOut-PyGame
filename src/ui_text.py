@@ -1,7 +1,7 @@
 from src.settings import *
 import pygame.freetype as ft 
 
-class InfoText():
+class TextOverlay():
     def __init__(self, mainframe, text = "") -> None:
         self.app = mainframe
         self.text = text
