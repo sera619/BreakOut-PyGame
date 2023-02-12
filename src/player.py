@@ -4,12 +4,10 @@ from src.settings import *
 class Player:
     hearts: int = 3
     score: int = 0
-    level: int = 0
+    level: int = 1
     broken_blocks: int  = 0
-    speed: int = 0
-    def __init__(self, speed) -> None:
-        self.speed = speed
-        self.hearts = 3
+    speed: int = 8
+
     
     def update_player(self,score: int, level: int, blocks: int):
         self.score = score

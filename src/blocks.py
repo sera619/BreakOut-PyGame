@@ -8,7 +8,7 @@ class GameBlocks:
         self.rows = rows
         self.column = column
         self.reward_score = 120
-        self.block_list = [pg.Rect(10 + (self.width + 5 ) * i, 10 + (self.height + 5 )* j, self.width, self.height) for i in range(column) for j in range(rows)]
+        self.block_list = [pg.Rect(10 + (self.width + 10) * i, 10 + (self.height + 5 )* j, self.width, self.height) for i in range(column) for j in range(rows)]
         self.color_list = [(255, 0, random.randrange(1, 256)) for i in range(column) for j in range(rows)]
         self.new_color_list =[(BLOCK_COLORS[random.randint(0, 7)]) for x in self.block_list]
 
