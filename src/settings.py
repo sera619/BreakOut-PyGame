@@ -7,7 +7,7 @@ import random, json, os, sys
 from typing import Final
 from dataclasses import dataclass
 
-VERSION: Final = "1.4.9"
+VERSION: Final = "1.5.7"
 VERSIONTEXT: Final = f"Version {VERSION} | Design & Development © 2023 S3R43o3"
 
 MENU_W, MENU_H = 1200, 75

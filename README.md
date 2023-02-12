@@ -45,5 +45,7 @@ __That README is still in development__
 >
 >   - ![ingame](assets/img/ingame.png)
 >
+>   - ![help](assets/img/help.png)
+>
 >   - ![highscore](assets/img/highscore.png)
 >

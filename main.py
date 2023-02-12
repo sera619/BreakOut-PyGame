@@ -236,8 +236,8 @@ class BreakOut:
                         self.Menu.show_mainmenu()
                         self.state = State.MENU
 
-                    elif event.ui_element == self.Menu.test_button:
-                        print("test")
+                    # elif event.ui_element == self.Menu.test_button:
+                    #     print("test")
 
                     elif event.ui_element == self.Menu.help_back_button:
                         self.Menu.show_mainmenu()
@@ -280,15 +280,11 @@ class BreakOut:
                     self.play_state()
             self.manager.update(time_delta)
 
-
             pg.display.update()
             pg.display.flip()
             self.clock.tick(self.fps)
         
         pg.quit()
-
-
-    
 
 
 if __name__ == '__main__':

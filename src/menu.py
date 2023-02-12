@@ -51,10 +51,10 @@ class BDMenu():
             text='Exit', 
             manager=self.manager)
 
-        self.test_button = GUI.UIButton(
-            relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 150, (DISPLAY_H * 0.7 ) - 10, 300, 65), 
-            text='Test', 
-            manager=self.manager)
+        # self.test_button = GUI.UIButton(
+        #     relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 150, (DISPLAY_H * 0.7 ) - 10, 300, 65), 
+        #     text='Test', 
+        #     manager=self.manager)
 
         # Versionstext
         self.version_label = GUI.UILabel(
