@@ -2,7 +2,7 @@ from src.settings import *
 from src.paddle import Paddle
 from src.ball import Ball
 from src.blocks import GameBlocks
-from src.ui_text import InfoText as pt
+from src.ui_text import TextOverlay 
 from src.menu import BDMenu
 from src.player import Player
 
@@ -11,27 +11,22 @@ class BreakOut:
     def __init__(self) -> None:
         pg.init()
         self.screen = pg.display.set_mode((DISPLAY_W, DISPLAY_H))
-        self.icon = pg.image.load(os.path.join(BASE_DIR+"\\assets\\img\\", 'gameicon.png'))
+        self.manager = pgGUI.UIManager((DISPLAY_W , DISPLAY_H), 'theme.json')
+        self.Menu = BDMenu(self.manager)
+        self.load_files()
         pg.display.set_caption('BreakOut PyGame')
         pg.display.set_icon(self.icon)
-        self.bg_music = pg.mixer.music.load(os.path.join(BASE_DIR +'\\assets\\sound\\','Music.mp3'))
-        self.menu_sound = pg.mixer.Sound(os.path.join(BASE_DIR +'\\assets\\sound\\','click.mp3'))
-        self.blockhit_sound = pg.mixer.Sound(os.path.join(BASE_DIR +'\\assets\\sound\\','blockhit.wav'))
         pg.mixer.music.play(-1, 0, 0)
         pg.mixer.music.set_volume(.4)
-        self.bg_img = pg.image.load(os.path.join(BASE_DIR +'\\assets\\img\\','bg.jpg')).convert_alpha()
-        self.ball_img = pg.image.load(os.path.join(os.curdir+"\\assets\\img\\", 'ball.png')).convert_alpha()
-        self.bg_img = pg.transform.scale(self.bg_img,(DISPLAY_W, DISPLAY_H))
-        self.manager = pgGUI.UIManager((DISPLAY_W , DISPLAY_H), 'theme.json')
         self.state = State.MENU
-        self.Menu = BDMenu(self.manager)
         self.Menu.show_mainmenu()
-        self.blockboard = GameBlocks(BLOCK_W, BLOCK_H, 5, int(DISPLAY_W // BLOCK_W))
-        self.menu_text = pt(self)
+
+        self.blockboard = GameBlocks(BLOCK_W, BLOCK_H, 3, int(DISPLAY_W // (BLOCK_W + 10)))
+        self.menu_text = TextOverlay(self)
         self.paddle = Paddle(PADDLE_W, PADDLE_H, 0, 0, 15)
         self.ball = Ball(10, 10, 10, img = self.ball_img)
+        self.player = Player()
         self.ballRect = self.ball.ballRect
-        self.player = Player(self.ball._speed)
         self.clock = pg.time.Clock()
 
         self.running = False
@@ -39,36 +34,48 @@ class BreakOut:
         self.game_over = False
         self.game_started = False
 
-        self.score = 0
         self.score_next = LEVEL_BREAKPOINTS['1']
-        self.level = 1
         self.broken_blocks = 0
-        self.player_hearts = self.player.hearts
         self.fps = FPS
         self.dx, self.dy = 1, -1
 
 
+
+    def load_files(self):
+        self.icon = pg.image.load(os.path.join(BASE_DIR+"\\assets\\img\\", 'gameicon.png'))
+        self.bg_img = pg.image.load(os.path.join(BASE_DIR +'\\assets\\img\\','bg.jpg')).convert_alpha()
+        self.ball_img = pg.image.load(os.path.join(os.curdir+"\\assets\\img\\", 'ball.png')).convert_alpha()
+        self.bg_music = pg.mixer.music.load(os.path.join(BASE_DIR +'\\assets\\sound\\','Music.mp3'))
+        self.menu_sound = pg.mixer.Sound(os.path.join(BASE_DIR +'\\assets\\sound\\','click.mp3'))
+        self.blockhit_sound = pg.mixer.Sound(os.path.join(BASE_DIR +'\\assets\\sound\\','blockhit.wav'))
+        self.bg_img = pg.transform.scale(self.bg_img,(DISPLAY_W, DISPLAY_H))
+
+
+
     def check_level_up(self):
-        if self.score >= self.score_next:
-            self.level +=1
-            self.score_next = LEVEL_BREAKPOINTS[str(self.level)] 
+        if self.player.score >= self.score_next:
+            self.player.level +=1
+            self.score_next = LEVEL_BREAKPOINTS[str(self.player.level)] 
         else:
             return
     
     def get_reward(self):
         self.fps += 2
-        self.score += self.blockboard.reward_score
-        self.broken_blocks += 1
+        self.player.score += self.blockboard.reward_score
+        self.player.broken_blocks += 1
         self.check_level_up()
         self.update_player()
-        
+            
+    def check_win(self) -> bool:
+        if not len(self.blockboard.block_list):
+            self.game_over = True
+            return True
+        return False
 
     def update_player(self):
-        self.player.update_player(self.score, self.level, self.broken_blocks)
         self.Menu.show_gameinfo(self.player)
 
     def start_game(self):
-        self.player.update_player(self.score, self.level, self.broken_blocks)
         self.Menu.show_gameinfo(self.player)
         if not self.game_started:
             self.game_started = True
@@ -78,10 +85,8 @@ class BreakOut:
             self.ball.set_active(True)
     
     def reset_game(self):
-        self.level = 1
-        self.score = 0
-        self.broken_blocks = 0
         self.player.reset_player()
+        self.fps = FPS
         self.game_started = False
         self.score_next = LEVEL_BREAKPOINTS['1']
         self.ball.set_active(False)
@@ -93,6 +98,7 @@ class BreakOut:
         # paddle + ball collision
         if self.ballRect.colliderect(self.paddle) and self.dy > 0:
             self.dx, self.dy = self.check_block_collision(self.dx, self.dy, self.ballRect, self.paddle.rect)
+            self.ball.play_sound()
     
         self.check_collision()
         # block + ball collision
@@ -105,6 +111,7 @@ class BreakOut:
             hit_rect.inflate_ip(self.ball.width * 4, self.ball.height * 4)
             pg.draw.rect(self.screen, hit_color, hit_rect)
             self.get_reward()
+            self.check_win()
 
         # paddle controls
         key = pg.key.get_pressed()
@@ -141,7 +148,7 @@ class BreakOut:
 
         if self.player.hearts <= 0:
             self.game_over = True
-            if self.score > self.Menu.best_score:
+            if self.player.score > self.Menu.best_score:
                 self.state = State.NAMEINPUT
                 self.Menu.show_highscoreinput()
         else:
@@ -166,18 +173,9 @@ class BreakOut:
             self.update_player()
             self.check_gameover()
 
-    
-    def check_win(self) -> bool:
-        if not len(self.blockboard.block_list):
-            self.game_over = True
-            return True
-        return False
-
-
-
     def set_new_highscore(self):
         if not self.Menu.score_name_input.get_text() == "":
-            self.Menu.data.add_new_highscore(self.Menu.score_name_input.get_text(), self.score)
+            self.Menu.data.add_new_highscore(self.Menu.score_name_input.get_text(), self.player.score)
             self.Menu.highscores = self.Menu.data.load()
             self.Menu.best_score = self.Menu.data.get_best_score(self.Menu.highscores)
             print("Game: Highscore saved!")
@@ -193,7 +191,6 @@ class BreakOut:
             for event in pg.event.get():
                 if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE and not self.state == State.INGAME):
                     self.running = False
-                
                 # keyboard events
                 if event.type == pg.KEYUP:
                     k = event.key
@@ -268,7 +265,7 @@ class BreakOut:
                 self.manager.draw_ui(self.screen)
                 if not self.game_started:
                     self.menu_text.draw_startText()
-                    if self.score != 0:
+                    if self.player.score != 0:
                         self.draw()
                 else:
                     self.draw()
