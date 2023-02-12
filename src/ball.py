@@ -7,6 +7,8 @@ class Ball(object):
         self.height = height
         self.img = img
         self.img = pg.image.load(os.path.join(os.curdir+"\\assets\\img\\", 'ball.png')).convert_alpha()
+        self.hit_sound = pg.mixer.Sound(os.path.join(os.curdir +'\\assets\\sound\\','Hit.wav'))
+        pg.mixer.Sound.set_volume(self.hit_sound, 0.5)
         self.active = False
         self._speed: int = speed
         self.radius = 10
@@ -24,32 +26,21 @@ class Ball(object):
     def speed(self, value: int):
         self._speed = value
 
+    def play_sound(self):
+        pg.mixer.Sound.play(self.hit_sound)
+
     def update_position(self, screen: pg.surface):
-        pg.draw.circle(screen, pg.Color('orange'), self.ballRect.center, self.radius)
+        # pg.draw.circle(screen, pg.Color('orange'), self.ballRect.center, self.radius)
         screen.blit(self.img, self.ballRect)
 
-    def reset_position(self, screen):
-        pg.draw.circle(screen, pg.Color('orange'), self.ballRect.center, self.radius)
-        screen.blit(self.img, self.ballRect)
+    def reset_position(self):
+        self.ballRect.center = (GAMEFIELD_W//2, (GAMEFIELD_H- MENU_H) //2 + 300)  
 
-    def check_collision(self, mainframe):
-        if self.ballRect.centerx < self.radius or self.ballRect.centerx > GAMEFIELD_W - self.radius:
-            mainframe.dx = - mainframe.dx
-
-        if self.ballRect.centery < self.radius: 
-            mainframe.dy = - mainframe.dy    
-        if self.ballRect.centery > (GAMEFIELD_H - MENU_H) + self.radius:
-            mainframe.set_gameover(True)
-            self.set_active(False)
-            print("Game Over")
-
-    def move(self, screen, mainframe):
+    def move(self, screen, app):
         if self.active:
             self.update_position(screen)
-            self.ballRect.x += self._speed * mainframe.dx
-            self.ballRect.y += self._speed * mainframe.dy
-            
-            self.check_collision(mainframe)
+            self.ballRect.x += self._speed * app.dx
+            self.ballRect.y += self._speed * app.dy
         else:
             self.update_position(screen)
     

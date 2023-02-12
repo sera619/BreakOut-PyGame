@@ -16,6 +16,7 @@ class BDMenu():
         self.play_button = None
         self.help_back_button = None
         self.help_labels = []
+        
 
         #self.data.save(self.highscores)
 
@@ -50,10 +51,10 @@ class BDMenu():
             text='Exit', 
             manager=self.manager)
 
-        # self.test_button = GUI.UIButton(
-        #     relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 150, (DISPLAY_H * 0.625 ) - 10, 300, 65), 
-        #     text='Test', 
-        #     manager=self.manager)
+        self.test_button = GUI.UIButton(
+            relative_rect=pg.Rect((DISPLAY_W  * 0.50) - 150, (DISPLAY_H * 0.7 ) - 10, 300, 65), 
+            text='Test', 
+            manager=self.manager)
 
         # Versionstext
         self.version_label = GUI.UILabel(
@@ -138,35 +139,46 @@ class BDMenu():
 
     def show_gameinfo(self, player):
         self.clear_screen()
+        self.playername_heart_label = GUI.UILabel(
+            relative_rect=pg.Rect((DISPLAY_W  * 0.355) - 150, (DISPLAY_H * 0.875 ), 300, 50), 
+            text= "Hearts:", 
+            manager=self.manager, 
+            object_id=pgGUI.core.ObjectID('#gameinfolabel-l'))
+        self.player_heart_label = GUI.UILabel(
+            relative_rect=pg.Rect((DISPLAY_W  * 0.645) - 150, (DISPLAY_H * 0.875 ), 300, 50), 
+            text= f"{player.hearts}", 
+            manager=self.manager, 
+            object_id=pgGUI.core.ObjectID('#gameinfolabel-r'))
+
         self.scorename_info_label = GUI.UILabel(
-            relative_rect=pg.Rect((DISPLAY_W  * 0.333) - 150, (DISPLAY_H * 0.875 ), 300, 50), 
-            text= "Score", 
+            relative_rect=pg.Rect((DISPLAY_W  * 0.355) - 150, (DISPLAY_H * 0.9 ), 300, 50), 
+            text= "Score:", 
             manager=self.manager, 
             object_id=pgGUI.core.ObjectID('#gameinfolabel-l'))
         self.score_info_label = GUI.UILabel(
-            relative_rect=pg.Rect((DISPLAY_W  * 0.666) - 150, (DISPLAY_H * 0.875 ), 300, 50), 
+            relative_rect=pg.Rect((DISPLAY_W  * 0.645) - 150, (DISPLAY_H * 0.9 ), 300, 50), 
             text= f"{player.score}", 
             manager=self.manager, 
             object_id=pgGUI.core.ObjectID('#gameinfolabel-r'))
 
         self.levelname_info_label = GUI.UILabel(
-            relative_rect=pg.Rect((DISPLAY_W  * 0.333) - 150, (DISPLAY_H * 0.9 ), 300, 50), 
-            text= "Level", 
+            relative_rect=pg.Rect((DISPLAY_W  * 0.355) - 150, (DISPLAY_H * 0.925 ), 300, 50), 
+            text= "Level:", 
             manager=self.manager, 
             object_id=pgGUI.core.ObjectID('#gameinfolabel-l'))
         self.level_info_label = GUI.UILabel(
-            relative_rect=pg.Rect((DISPLAY_W  * 0.666) - 150, (DISPLAY_H * 0.9 ), 300, 50), 
+            relative_rect=pg.Rect((DISPLAY_W  * 0.645) - 150, (DISPLAY_H * 0.925 ), 300, 50), 
             text= f"{player.level}", 
             manager=self.manager, 
             object_id=pgGUI.core.ObjectID('#gameinfolabel-r'))
 
         self.blockname_info_label = GUI.UILabel(
-            relative_rect=pg.Rect((DISPLAY_W  * 0.333) - 150, (DISPLAY_H * 0.925 ), 300, 50), 
-            text= "Blocks", 
+            relative_rect=pg.Rect((DISPLAY_W  * 0.355) - 150, (DISPLAY_H * 0.95 ), 300, 50), 
+            text= "Blocks:", 
             manager=self.manager, 
             object_id=pgGUI.core.ObjectID('#gameinfolabel-l'))
         self.block_info_label = GUI.UILabel(
-            relative_rect=pg.Rect((DISPLAY_W  * 0.666) - 150, (DISPLAY_H * 0.925 ), 300, 50), 
+            relative_rect=pg.Rect((DISPLAY_W  * 0.645) - 150, (DISPLAY_H * 0.95 ), 300, 50), 
             text= f"{player.broken_blocks}", 
             manager=self.manager, 
             object_id=pgGUI.core.ObjectID('#gameinfolabel-r'))
