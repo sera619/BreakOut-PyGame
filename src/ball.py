@@ -11,10 +11,10 @@ class Ball(object):
         pg.mixer.Sound.set_volume(self.hit_sound, 0.5)
         self.active = False
         self._speed: int = speed
-        self.radius = 12
+        self.radius = 12 * 2.25
         self.ball_rect = int(self.radius * 2 ** 0.5)
 #        self.ballRect = pg.Rect(random.randrange(self.ball_rect, GAMEFIELD_W - self.ball_rect), (GAMEFIELD_H - MENU_H)  // 2, self.ball_rect, self.ball_rect)
-        self.img = pg.transform.scale(self.img,(self.radius * 2.25, self.radius * 2.25))
+        self.img = pg.transform.scale(self.img,(self.radius, self.radius))
         self.ballRect = self.img.get_rect()
         self.ballRect.center = (GAMEFIELD_W//2 , (GAMEFIELD_H- MENU_H) //2)
 
