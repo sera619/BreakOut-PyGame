@@ -1,7 +1,7 @@
 from src.settings import *
 from src.paddle import Paddle
 from src.ball import Ball
-from src.blocks import GameBlocks
+from src.blocks import GameBlocks, ParticleEffect
 from src.ui_text import TextOverlay 
 from src.menu import BDMenu
 from src.player import Player
@@ -21,7 +21,7 @@ class BreakOut:
         self.state = State.MENU
         self.Menu.show_mainmenu()
 
-        self.blockboard = GameBlocks(BLOCK_W, BLOCK_H, 3, int(DISPLAY_W // (BLOCK_W + 10)))
+        self.blockboard = GameBlocks(BLOCK_W, BLOCK_H, 6, 9)
         self.menu_text = TextOverlay(self)
         self.paddle = Paddle(PADDLE_W, PADDLE_H, 0, 0, 15)
         self.ball = Ball(10, 10, 10, img = self.ball_img)
@@ -29,11 +29,14 @@ class BreakOut:
         self.ballRect = self.ball.ballRect
         self.clock = pg.time.Clock()
 
+        #self.blockboard_new = BlockPattern(DISPLAY_W-10, DISPLAY_H - 10, 80,40)
+        #self.blockboard_new.reset_to_level(1)
         self.running = False
         self.pause = False
         self.game_over = False
         self.game_started = False
-
+        self.blockanim = None
+        self.wallanim = None
         self.score_next = LEVEL_BREAKPOINTS['1']
         self.broken_blocks = 0
         self.fps = FPS
@@ -65,6 +68,7 @@ class BreakOut:
         self.player.broken_blocks += 1
         self.check_level_up()
         self.update_player()
+        
             
     def check_win(self) -> bool:
         if not len(self.blockboard.block_list):
@@ -100,7 +104,6 @@ class BreakOut:
             self.dx, self.dy = self.check_block_collision(self.dx, self.dy, self.ballRect, self.paddle.rect)
             self.ball.play_sound()
     
-        self.check_collision()
         # block + ball collision
         hit_index = self.ballRect.collidelist(self.blockboard.block_list)
         if hit_index != -1:
@@ -113,6 +116,7 @@ class BreakOut:
             self.get_reward()
             self.check_win()
 
+        self.check_collision()
         # paddle controls
         key = pg.key.get_pressed()
         if (key[pg.K_a] or key[pg.K_LEFT]) and self.paddle.rect.left > 10:
@@ -123,6 +127,8 @@ class BreakOut:
     def draw(self):
         self.paddle.draw(self.screen)
         self.blockboard.draw(self.screen)
+        #self.blockboard_new.draw(self.screen)
+
 
     def check_block_collision(self, dx, dy, ball, rect):
         if dx > 0:
@@ -157,11 +163,18 @@ class BreakOut:
     def check_collision(self):
         if self.ball.ballRect.centerx < self.ball.radius or self.ball.ballRect.centerx > GAMEFIELD_W - self.ball.radius:
             self.dx = - self.dx
+            self.blockanim = ParticleEffect(self.screen, self.ballRect.center, pg.Color(169, 44, 0))
+            self.blockanim.active = True
+            self.blockanim.draw()
             self.ball.play_sound()
 
-        if self.ballRect.centery < self.ball.radius: 
+
+        if self.ballRect.centery <  self.ball.radius: 
             self.dy = - self.dy
             self.ball.play_sound()
+            self.blockanim = ParticleEffect(self.screen, self.ballRect.center, pg.Color(169, 44, 0))
+            self.blockanim.active = True
+            self.blockanim.draw()
 
         if self.ballRect.centery > (GAMEFIELD_H - MENU_H) + self.ball.radius:
             self.ball.set_active(False)
@@ -186,8 +199,12 @@ class BreakOut:
     def run(self):
         self.running = True
         self.state = State.MENU
-        while self.running:                
+        dev = True
+        while self.running:
+
             time_delta = self.clock.tick(self.fps) / 1000.0
+
+            
             for event in pg.event.get():
                 if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE and not self.state == State.INGAME):
                     self.running = False
@@ -203,7 +220,12 @@ class BreakOut:
                             else:
                                 self.ball.set_active(True)
                                 print("Game resumed!")
+                    if k == pg.K_t and self.state == State.INGAME:
+                        if self.wallanim == None:
+                            self.wallanim = ParticleEffect(self.screen, self.ballRect.center, pg.Color(3, 252, 94))
+                            self.wallanim.active = True
 
+                        
                     elif k == pg.K_ESCAPE and self.state == State.INGAME:
                         self.reset_game()
                         self.Menu.show_mainmenu()
@@ -237,8 +259,7 @@ class BreakOut:
                         self.state = State.MENU
 
                     # elif event.ui_element == self.Menu.test_button:
-                    #     print("test")
-
+                    #     pass
                     elif event.ui_element == self.Menu.help_back_button:
                         self.Menu.show_mainmenu()
                         self.state = State.MENU
@@ -252,6 +273,18 @@ class BreakOut:
                 self.manager.process_events(event)
 
             self.reset_screen()
+            if self.blockanim != None: 
+                if self.blockanim.active:
+                    self.blockanim.update(dt=time_delta * 4)
+                    self.blockanim.draw()
+                elif not self.blockanim.active:
+                    self.blockanim = None
+            if self.wallanim != None:
+                if self.wallanim.active:
+                    self.wallanim.update(dt=time_delta *4)
+                    self.wallanim.draw()
+                elif not self.wallanim.active:
+                    self.wallanim = None
             if self.state == State.MENU:
                 self.manager.draw_ui(self.screen)
             elif self.state == State.HIGHSCORE:

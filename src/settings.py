@@ -6,7 +6,7 @@ import enum
 import random, json, os, sys
 from typing import Final
 from dataclasses import dataclass
-
+import pathlib
 VERSION: Final = "1.5.7"
 VERSIONTEXT: Final = f"Version {VERSION} | Design & Development © 2023 S3R43o3"
 
